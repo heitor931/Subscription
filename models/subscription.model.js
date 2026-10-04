@@ -1,0 +1,103 @@
+import mongoose from "mongoose";
+
+const subscriptionSchema = new mongoose.Schema({
+
+    name: {
+        trim:true,
+        minlength: [2, "Subscription name must be at least 3 characters long"],
+        maxLength: [100, "Subscription name must be at most 20 characters long"]
+    },
+
+    price: {
+        type: Number,
+        required: [true, "Price is required"],
+        min: [0, "Price must be a positive number"]
+    },
+
+    currency: {
+        type: String,
+        enum: ["USD", "EUR", "GBP", "JPY", "CAD", "AUD"],
+        default: "USD"
+    },
+    frequency: {
+        type: String,
+        enum: ["daily", "weekly", "monthly", "yearly"],
+    },
+
+    category: {
+        type: String,
+        enum: ["Entertainment", "Productivity", "Education", "Health & Fitness", "News & Magazines", "Social Media", "Other"],
+        required: [true, "Category is required"]
+    },
+
+    paymentMethod: {
+        type: String,
+        required: [true, "Payment method is required"],
+        trim: true
+    },
+
+    status: {
+        type: String,
+        enum: ["active", "expired", "canceled"],
+        default: "active"
+    },
+
+    startDate: {
+        type: Date,
+        required: [true, "Start date is required"],
+        validate: {
+            validator: function (value) {
+                return value <= new Date();
+            },
+            message: "Start date cannot be in the past"
+        }
+    },
+     renewalDate: {
+        type: Date,
+        required: [true, "Start date is required"],
+        validate: {
+            validator: function (value) {
+                return value >= this.startDate;
+            },
+            message: "Renewal date cannot be before the start date"
+        }
+    },
+
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "User ID is required"],
+        index: true
+    },
+
+options: {
+    timestamps: true
+  }
+
+})
+
+//Auto calculate renewal date if missing
+subscriptionSchema.pre("save", function (next) {
+    if (!this.renewalDate) {
+
+        const renewalPeriods = {
+            daily: 1,
+            weekly: 7,
+            monthly: 30,
+            yearly: 365
+        };
+
+        this.renewalDate = new Date(this.startDate);
+        this.renewalDate.setDate(this.renewalDate.getDate() + renewalPeriods[this.frequency]);
+
+    }
+
+// Auto update the status if renewal date has passed
+    if (this.renewalDate < new Date()) {
+        this.status = "expired";
+    }
+
+
+    next();
+});
+
