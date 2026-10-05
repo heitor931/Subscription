@@ -64,17 +64,17 @@ const subscriptionSchema = new mongoose.Schema({
     },
 
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId, 
         ref: "User",
         required: [true, "User ID is required"],
         index: true
     },
 
-options: {
+},
+{
     timestamps: true
-  }
-
-})
+}
+)
 
 //Auto calculate renewal date if missing
 subscriptionSchema.pre("save", function (next) {
