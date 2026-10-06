@@ -73,7 +73,6 @@ export const signIn = async function (req, res, next) {
         next(error);
     }
 
-
 }
 
 export const signOut = async function (req, res, next) {
