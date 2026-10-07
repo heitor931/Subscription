@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const subscriptionSchema = new mongoose.Schema({
 
     name: {
-        trim:true,
+        type: String,
+        trim: true,
         minlength: [2, "Subscription name must be at least 3 characters long"],
         maxLength: [100, "Subscription name must be at most 20 characters long"]
     },
@@ -52,7 +53,7 @@ const subscriptionSchema = new mongoose.Schema({
             message: "Start date cannot be in the past"
         }
     },
-     renewalDate: {
+    renewalDate: {
         type: Date,
         required: [true, "Start date is required"],
         validate: {
@@ -64,7 +65,7 @@ const subscriptionSchema = new mongoose.Schema({
     },
 
     user: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: [true, "User ID is required"],
         index: true
@@ -74,6 +75,8 @@ const subscriptionSchema = new mongoose.Schema({
 {
     timestamps: true
 }
+
+
 )
 
 //Auto calculate renewal date if missing
@@ -92,7 +95,7 @@ subscriptionSchema.pre("save", function (next) {
 
     }
 
-// Auto update the status if renewal date has passed
+    // Auto update the status if renewal date has passed
     if (this.renewalDate < new Date()) {
         this.status = "expired";
     }
@@ -101,3 +104,6 @@ subscriptionSchema.pre("save", function (next) {
     next();
 });
 
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
+
+export default Subscription;

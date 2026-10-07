@@ -7,6 +7,7 @@ import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import errorMiddleware from "./middleware/error.middleware.js";
 import connectDB from "./config/database.js";
+import arcjetMiddleware from "./middleware/arcjet.middleware.js";
 
 
 const app = express();
@@ -14,6 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(arcjetMiddleware); // Apply Arcjet middleware to all routes
 
 app.use("/api/v1/subscriptions", subscriptionRouter);
 app.use("/api/v1/users", userRouter);
