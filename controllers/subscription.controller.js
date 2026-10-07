@@ -2,14 +2,15 @@ import Subscription from "../models/subscription.model.js";
 
 
 export const createSubscription = async (req, res, next) => {
-    console.log(req.body);
-    const body = {...req.body, startDate: new Date(req.body.startDate)}
-    console.log(body);
+    const date = new Date()
+    console.log(date);
+    
+   // console.log(req.body);
     
     try {
 
         const subscription = await Subscription.create({
-            ...body,
+            ...req.body,
             user: req.user._id,
         });
        
