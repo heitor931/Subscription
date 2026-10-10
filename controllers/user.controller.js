@@ -2,7 +2,7 @@ import User from '../models/user.model.js';
 
 
 // Get all users
-export const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res, next) => {
     try {
 
         const users = await User.find();
@@ -16,7 +16,7 @@ export const getAllUsers = async (req, res) => {
 
 // Get a single user by ID
 
-export const getUser = async (req, res) => {
+export const getUser = async (req, res, next) => {
 
 
     try {

@@ -1,4 +1,3 @@
-console.log("Server is running on port 3000");
 import express from "express";
 import { PORT } from "./config/env.js";
 import subscriptionRouter from "./routes/subscription.routes.js";
